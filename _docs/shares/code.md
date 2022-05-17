@@ -1,6 +1,6 @@
 ---
 title:  编码规范
-permalink: /docs/shares/code
+permalink: /docs/shares-code
 ---
 
 # Java 开发规范
