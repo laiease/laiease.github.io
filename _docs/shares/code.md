@@ -3,20 +3,20 @@ title:  编码规范
 permalink: /docs/shares-code/
 ---
 
-# Java 开发规范
+## Java 开发规范
 
 > *v1.0.1 2022/05/16*
 
-## 分层规范
+### 分层规范
 
-### 1. 整体分层
+#### 1. 整体分层
 
 - controller
 - service
 - dao
 - entity
 
-### 2.  controller
+#### 2.  controller
 
 职责：参数校验，返回数据组合、拼装
 
@@ -56,7 +56,7 @@ permalink: /docs/shares-code/
 
 3. 不做任何的业务逻辑操作。
 
-### 3.  service
+#### 3.  service
 
 1. 命名：以业务模块命名。
 
@@ -127,16 +127,16 @@ permalink: /docs/shares-code/
    }
    ```
 
-### 4. dao
+#### 4. dao
 
 1. 命名：和数据库表一致。
 2. 建议不要直接在 mybatis xml 中写死常量，应从 dao 中传入到 xml 中。
 
-### 5. entity
+#### 5. entity
 
 业务逻辑或者计算
 
-## 命名规范
+### 命名规范
 
 **所有命名严禁使用拼音与英文混合的方式，更不允许直接使用中文拼音的方式。**
 
@@ -186,16 +186,16 @@ public class StudentService{
 }
 ```
 
-### 2. 属性名称
+#### 2. 属性名称
 
 - boolean类型变量都不要加 `is`
 
-### 3. 方法参数
+#### 3. 方法参数
 
 - 无论是 `controller` , `service` , `dao` 还是其他的代码，每个方法最多 `3` 个参数，如果超出 `3` 个参数的话，建议封装成 `javabean` 对象。
 - 不推荐直接使用 `JSONObject` , `Map<String,Object>` 等直接作为方法参数。
 
-## 异常定义规范
+### 异常定义规范
 
 异常分类两个基本类：返回给前端错误信息的 `MessageException` ，后台出现异常的 `BaseException` 。
 
@@ -208,7 +208,7 @@ public class StudentService{
   - 需要包含**给程序员调试的**错误提示信息和堆栈信息。
 
 
-## 日志记录规范
+### 日志记录规范
 
 1. 日志分级
 
