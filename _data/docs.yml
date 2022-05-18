@@ -6,3 +6,7 @@
   docs:
   - shares-code
 
+  - title: shares
+  docs:
+  - shares-k8s-deploy-local
+
