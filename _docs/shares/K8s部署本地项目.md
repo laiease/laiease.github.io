@@ -3,18 +3,16 @@ title:  K8s部署本地项目
 permalink: /docs/shares-k8s-deploy-local/
 ---
 
-### 一、编写Dockerfile，打包本地镜像
+
+#### 一、编写Dockerfile，打包本地镜像
 
 ```dockerfile
 FROM openjdk:17-jdk
 
-# RUN：在镜像中运行
 RUN mkdir /opt/stress-test
 
-# 项目运行的jar
 COPY ./target/stress-test-*.jar /opt/stress-test/stress-test.jar
 
-# 相当于进入到目录
 WORKDIR /opt/stress-test
 EXPOSE 8080
 
@@ -24,89 +22,71 @@ ENTRYPOINT ["java", "-jar", "stress-test.jar"]
 使用命令`docker build`将项目打包成docker镜像
 
 ```shell
-$ docker build -t stress-test ./Dockerfile
+docker build -t stress-test ./Dockerfile
 ```
 
-> 如果在Dockerfile所在目录运行的话。也可以使用`docker build -t stress-test .`
 
 
+#### 二、搭建本地私有化docker镜像仓库，将镜像上传到其中
 
-### 二、搭建本地私有化docker镜像仓库，将镜像上传到其中
+1. 搭建本地私有化docker仓库
 
-#### 1. 搭建本地私有化docker仓库
+    ```shell
+    $ docker run -itd -v /data/registry:/var/lib/registry -p 5000:5000 --restart=always --name registry registry:latest
+    Unable to find image 'registry:latest' locally
+    latest: Pulling from library/registry
+    79e9f2f55bf5: Pull complete 
+    0d96da54f60b: Pull complete 
+    5b27040df4a2: Pull complete 
+    e2ead8259a04: Pull complete 
+    3790aef225b9: Pull complete 
+    Digest: sha256:169211e20e2f2d5d115674681eb79d21a217b296b43374b8e39f97fcf866b375
+    Status: Downloaded newer image for registry:latest
+    b02c4ce152aae4828dae13f05a38b57bd1dd9189bbc1e5ac7108d1c6a9129ce3
+    $ docker ps -a
+    CONTAINER ID   IMAGE                                               COMMAND                  CREATED              STATUS                       PORTS                                       NAMES
+    b02c4ce152aa   registry:latest                                     "/entrypoint.sh /etc…"   About a minute ago   Up About a minute            0.0.0.0:5000->5000/tcp, :::5000->5000/tcp   registry
+    ```
 
-```shell
-$ docker run -itd -v /data/registry:/var/lib/registry -p 5000:5000 --restart=always --name registry registry:latest
-Unable to find image 'registry:latest' locally
-latest: Pulling from library/registry
-79e9f2f55bf5: Pull complete 
-0d96da54f60b: Pull complete 
-5b27040df4a2: Pull complete 
-e2ead8259a04: Pull complete 
-3790aef225b9: Pull complete 
-Digest: sha256:169211e20e2f2d5d115674681eb79d21a217b296b43374b8e39f97fcf866b375
-Status: Downloaded newer image for registry:latest
-b02c4ce152aae4828dae13f05a38b57bd1dd9189bbc1e5ac7108d1c6a9129ce3
-$ docker ps -a
-CONTAINER ID   IMAGE                                               COMMAND                  CREATED              STATUS                       PORTS                                       NAMES
-b02c4ce152aa   registry:latest                                     "/entrypoint.sh /etc…"   About a minute ago   Up About a minute            0.0.0.0:5000->5000/tcp, :::5000->5000/tcp   registry
-```
+2. 搭建好私有化仓库后需要修改`daemon.json`文件，将本地私有化仓库的地址添加到文件中，然后加载配置文件并重启docker服务
 
->`-i`:以交互模式运行容器，通常与 -t 同时使用
->
->`-t`:为容器重新分配一个伪输入终端，通常与 -i 同时使用
->
->`-d`: 后台运行容器，并返回容器ID； 
->
->`-v`: 目录映射，**宿主机目录:容器内部目录**
->
->`-p`: 端口映射，**宿主机端口:容器内部端口**
->
->`--restart`: 重启策略，always代表每次容器退出都重启
->
->`--name`: 启动后的容器名称
+    ```shell
+    $ vim /etc/docker/daemon.json
+    {
+        ......
+        "insecure-registries": ["IP:PORT"]
+    }
+    $ systemctl daemon-reload
+    $ systemctl restart docker
+    ```
 
+    > 1. 默认docker拉取私有仓库是使用`https`协议，如果需要使用`http`就需要添加到`insecure-registries`中。
+    > 2. 所有使用此私有仓库的节点都需要此操作。
 
+3. 将本地镜像私有化docker仓库中
 
-#### 2. 搭建好私有化仓库后需要修改`daemon.json`文件，将本地私有化仓库的地址添加到文件中，然后加载配置文件并重启docker服务
+    1. 将本地镜像打标签
 
-```shell
-$ vim /etc/docker/daemon.json
-{
-    ......
-    "insecure-registries": ["IP:PORT"]
-}
-$ systemctl daemon-reload
-$ systemctl restart docker
-```
+        `docker tag xxx:xxx IP:PORT/xxx:xxx`
 
-> 1. 默认docker拉取私有仓库是使用`https`协议，如果需要使用`http`就需要添加到`insecure-registries`中。
-> 2. 所有使用此私有仓库的节点都需要此操作。
+    2. 上传镜像
 
-#### 3. 将本地镜像私有化docker仓库中
+        `docker push IP:PORT/xxx:xxx `
 
-1. 将本地镜像打标签
+4. 查看本地仓库
 
-    `docker tag xxx:xxx IP:PORT/xxx:xxx`
+    1. 查看本地仓库中的镜像名称`curl -XGET http://IP:PORT/v2/_catalog`
 
-2. 上传镜像
+    2. 查看本地仓库中的某一镜像的版本`curl -XGET http://IP:PORT/v2/xxx/tags/list`
 
-    `docker push IP:PORT/xxx:xxx `
+         
 
-#### 4. 查看本地仓库
-
-1. 查看本地仓库中的镜像名称`curl -XGET http://IP:PORT/v2/_catalog`
-
-2. 查看本地仓库中的某一镜像的版本`curl -XGET http://IP:PORT/v2/xxx/tags/list`
-
-     
-
-### 三、编写项目的yaml文件。
+#### 三、编写项目的yaml文件。
 
 1. postgres的启动文件
 
     ```yaml
-    $ cat stress-test.yaml
+    $ cat postgres.yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -143,7 +123,12 @@ $ systemctl restart docker
               volumeMounts:
                 - name: task-v-postgres
                   mountPath: /var/lib/postgresql/data
-    ---
+    ```
+
+2. 项目文件
+
+    ```yaml
+    $ cat stress-test.yaml
     apiVersion: apps/v1
     kind: Deployment
     metadata:
@@ -172,12 +157,10 @@ $ systemctl restart docker
                   mountPath: /opt/stress-test
     ```
 
-    
-
     使用命令`kubectl apply`来发布编写好的文件
 
     ```shell
-    kubectl apply -f stress-test.yaml
+    kubectl apply -f postgres.yaml/stress-test.yaml
     ```
 
     
@@ -187,7 +170,7 @@ $ systemctl restart docker
 1. 数据库开放端口文件
 
     ```yaml
-    $ cat stress-test-svc.yaml
+    $ cat postgres-svc.yaml
     apiVersion: v1
     kind: Service
     metadata:
@@ -203,7 +186,12 @@ $ systemctl restart docker
           protocol: TCP
       selector:
         app: postgres
-    ---
+    ```
+
+2. 项目开放端口文件
+
+    ```yaml
+    $ cat stress-test-svc.yaml
     apiVersion: v1
     kind: Service
     metadata:
@@ -221,17 +209,15 @@ $ systemctl restart docker
         run: stress-test
     ```
 
-    
-
     使用命令`kubectl apply`来发布编写好的文件
 
     ```shell
-    kubectl apply -f stress-test-svc.yaml
+    kubectl apply -f postgres-svc.yaml/stress-test-svc.yaml
     ```
 
     
 
 ### 五、部署成功。
 
-​ 可以通过任意节点的IP:30002来访问系统。
+​	可以通过任意节点的IP:30002来访问系统。
 
