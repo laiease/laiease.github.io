@@ -24,7 +24,7 @@ permalink: /docs/docker-introduce/
 
 #### 2. 容器（Container）
 
-镜像（`Image`）和容器（`Container`）的关系，就像是面向对象程序设计中的 `类` 和 `实例` 一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等。
+镜像（`Image`）和容器（`Container`）的关系，就像操作系统的`安装文件`和我们使用的`操作系统`一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等。
 
 容器的实质是进程，但与直接在宿主执行的进程不同，容器进程运行于属于自己的独立的 [命名空间](https://en.wikipedia.org/wiki/Linux_namespaces)。因此容器可以拥有自己的 `root` 文件系统、自己的网络配置、自己的进程空间，甚至自己的用户 ID 空间。容器内的进程是运行在一个隔离的环境里，使用起来，就好像是在一个独立于宿主的系统下操作一样。这种特性使得容器封装的应用比直接在宿主运行更加安全。
 
@@ -51,14 +51,23 @@ permalink: /docs/docker-introduce/
     - [阿里云加速器](https://www.aliyun.com/product/acr?source=5176.11533457&userCode=8lx5zmtu)
     - [网易云加速器](https://www.163yun.com/help/documents/56918246390157312)
     - [百度云加速器](https://cloud.baidu.com/doc/CCE/s/Yjxppt74z#使用dockerhub加速器)
-
     
-
 - 私有服务
 
     Docker 官方提供了 [Docker Registry](https://hub.docker.com/_/registry/) 镜像，可以直接使用做为私有 Registry 服务。但是此服务只支持命令的方式来使用，没有图形界面、用户管理和权限控制等功能。
 
+**Docker使用步骤：**
 
+1. 获取镜像
+
+   1. 从仓库下载镜像
+   2. 本地构建镜像(Dockerfile)
+
+2. 基于镜像启动容器
+
+3. 将私有镜像上传到Repository，供他人使用
+
+   
 
 ### 安装
 
@@ -162,7 +171,7 @@ $ docker image rm $(docker image ls -q ubuntu)
 
 Dockerfile 是一个文本文件，其内包含了一条条的 **指令(Instruction)**，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建。
 
-```
+```dockerfile
 FROM openjdk:17-jdk
 
 # RUN：在镜像中运行
@@ -178,10 +187,12 @@ EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "stress-test.jar"]
 ```
 
+> Dockerfile 尽量合并在一个指令中去写，尤其是`run`指令。 
+
 使用命令`docker build`将项目打包成docker镜像
 
 ```
-$ docker build -t stress-test -f ./Dockerfile
+$ docker build -t stress-test -.
 ```
 
 > 如果在Dockerfile所在目录运行的话。也可以使用`docker build -t stress-test .`
