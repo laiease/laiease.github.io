@@ -174,17 +174,14 @@ Dockerfile 是一个文本文件，其内包含了一条条的 **指令(Instruct
 ```dockerfile
 FROM openjdk:17-jdk
 
-# RUN：在镜像中运行
 RUN mkdir /opt/stress-test
 
-# 项目运行的jar
-COPY ./target/stress-test-*.jar /opt/stress-test/stress-test.jar
+COPY ./stress-test.jar /opt/stress-test/stress-test.jar
 
-# 相当于进入到目录
 WORKDIR /opt/stress-test
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "stress-test.jar"]
+CMD ["java", "-jar", "stress-test.jar"]
 ```
 
 > Dockerfile 尽量合并在一个指令中去写，尤其是`run`指令。 
@@ -192,7 +189,7 @@ ENTRYPOINT ["java", "-jar", "stress-test.jar"]
 使用命令`docker build`将项目打包成docker镜像
 
 ```
-$ docker build -t stress-test -.
+$ docker build -t stress-test -f ./Dockerfile .
 ```
 
 > 如果在Dockerfile所在目录运行的话。也可以使用`docker build -t stress-test .`
@@ -445,3 +442,28 @@ $ systemctl restart docker
 #### 5. 下载镜像
 
 `docker pull IP:PORT/xxx:xxx `
+
+
+
+### 网络
+
+#### 1. 外部访问容器
+
+容器在创建时，可以使用`-p`参数将容器内的端口映射到宿主机中。通过访问宿主机相应的端口，就可以映射到容器中。
+
+#### 2. 容器互联
+
+使用 `--link` 参数来使容器互联，但是随着 Docker 网络的完善，建议大家将容器加入自定义的 Docker 网络来连接多个容器。
+
+格式为：
+
+```shell
+$ docker network COMMAND
+```
+
+> - `connect` : 连接一个容器到已有的网络
+> - `create` : 创建一个新的网络
+> - `disconnect`: 断开一个网络中的容器
+> - `ls` : 查看网络列表
+> - `rm` : 删除一个或多个网络
+
