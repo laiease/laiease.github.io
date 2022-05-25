@@ -6,6 +6,7 @@
   docs:
   - shares-code
   - docker-introduce
+  - docker-compose
   - shares-k8s-deploy-local
   - text-classification-rnn
   

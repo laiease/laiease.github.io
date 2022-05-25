@@ -64,29 +64,12 @@ networks:
     name: my_network
 
 services:
-  frontend:
-    build: ./frontend/Dockerfile
-    image: sbd-nginx:1.0.0
-    container_name: sbd-nginx
-    ports:
-      - "80:80"
-    volumes:
-      - /data/nginx/data/conf.d:/etc/nginx/conf.d
-      - /data/nginx/html:/usr/share/nginx/html
-    depends_on:
-      - backend
-    networks:
-      - my_network
-
-  backend:
-    build: ./backend/Dockerfile
-    image: share-business-department
-    container_name: share-business-department
+  web:
+    build: .
+    image: stress-test:1.0.0
+    container_name: stress-test
     ports:
       - "8090:8080"
-    volumes:
-      - /data/share-business-department/config:/opt/config
-      - /data/share-business-department/logs:/opt/logs
     depends_on:
       - postgres
     networks:
@@ -268,4 +251,96 @@ networks:
 
 
 ### 命令
+
+对于 Compose 来说，大部分命令的对象既可以是项目本身，也可以指定为项目中的服务或者容器。如果没有特别的说明，命令对象将是项目，这意味着项目中所有的服务都会受到命令影响。
+
+`docker compose` 的基本使用格式为:
+
+```shell
+$ docker compose [options] [COMMAND]
+```
+
+> - 如果安装的`Compose`版本为V2的话，可以是用命令`docker compose`，也可以使用二进制文件`docker-compose`。V1版本无法使用`docker compose`命令。
+
+默认使用的是命令执行时所在的目录下的 `docker-compose.yaml` 文件，也可以通过`-f`参数指定文件，例如:
+
+```shell
+$ docker compose -f ./docker-compose.yml up -d
+```
+
+#### up
+
+根据 `docker-compose.yaml` 文件启动项目，格式为：
+
+```shell
+$ docker compose up [options] [SERVICE...]
+```
+
+该命令十分强大，它将尝试自动完成包括构建镜像，（重新）创建服务，启动服务，并关联服务相关容器的一系列操作。
+
+选项：
+
+- `-d` 在后台运行服务容器。
+- `--no-deps` 不启动服务所链接的容器。
+- `--force-recreate` 强制重新创建容器，不能与 `--no-recreate` 同时使用。
+- `--no-recreate` 如果容器已经存在了，则不重新创建，不能与 `--force-recreate` 同时使用。
+
+#### down
+
+此命令将会停止并删除 `up` 命令所启动的容器，并移除网络。
+
+#### restart
+
+格式为：
+
+```shell
+$ docker compose restart [options] [SERVICE...]
+```
+
+重启项目中的服务。
+
+#### stop
+
+格式为：
+
+```shell
+$ docker compose stop [SERVICE...]
+```
+
+停止已经处于运行状态的容器，但不删除它。通过 `docker-compose start` 可以再次启动这些容器。
+
+#### start
+
+格式为：
+
+```shell
+$ docker compose start [SERVICE...]
+```
+
+启动已经存在的服务容器。
+
+#### scale
+
+格式为 :
+
+```shell
+$ docker compose scale [options] [SERVICE=NUM...]
+```
+
+设置指定服务运行的容器个数。当指定数目多于该服务当前实际运行容器，将新创建并启动容器；反之，将停止容器。
+
+#### rm
+
+格式为 :
+
+```shell
+$ docker compose rm [options] [SERVICE...]
+```
+
+删除所有（停止状态的）服务容器。推荐先执行 `docker-compose stop` 命令来停止容器。
+
+选项：
+
+- ``-f` 强制直接删除，包括非停止状态的容器。
+- `-v` 删除容器所挂载的数据卷。
 
