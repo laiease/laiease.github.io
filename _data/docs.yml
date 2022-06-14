@@ -5,6 +5,7 @@
 - title: shares
   docs:
   - shares-code
+  - gitlab-CI/CD
   - docker-introduce
   - docker-compose
   - shares-k8s-deploy-local
