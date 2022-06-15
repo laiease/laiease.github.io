@@ -82,7 +82,7 @@ Runner registered successfully. Feel free to start it, but if it's running alrea
 
 其中是通过 `GitLab` 来找到的，首先进入到需要设置 `CI/CD` 的项目，然后按照下图流程即可找到。
 
-<img src="C:\Users\zhang\AppData\Roaming\Typora\typora-user-images\image-20220614173622783.png" alt="image-20220614173622783" style="zoom:80%;" />
+<img src="/asstes/img/gitlab-ci-cd.png" alt="gitlab-ci-cd" style="zoom:80%;" />
 
 注册成功后，可以在`/data/gitlab/gitlab-runner/config`下找到Runner的配置文件`config.toml`
 
@@ -145,17 +145,35 @@ check_interval = 0
 variables:
   #指定maven本地仓库地址
   MAVEN_OPTS: "-Dmaven.repo.local=/root/.m2/repository"
+  #  定义compile shell
+  COMPILE_SHELL: "mvn clean compile -Dmaven.test.skip=true $MAVEN_OPTS  --settings=/root/.m2/settings.xml"
   # 定义build shell
   BUILD_SHELL: "mvn clean package -Dmaven.test.skip=true $MAVEN_OPTS  --settings=/root/.m2/settings.xml"
 
 stages:          # List of stages for jobs, and their order of execution
+  - compile
   - package
   - build
   - deploy
 
+compile-job:       # This job runs in the build stage, which runs first.
+  stage: compile
+  image: maven:3.8.5-jdk-8
+  only:
+    - dev
+  tags:
+    - runner-123
+  script:
+    - echo $CI_COMMIT_MESSAGE
+    - echo `mvn --version`
+    - echo $COMPILE_SHELL
+    - $COMPILE_SHELL
+
 package-job:       # This job runs in the build stage, which runs first.
   stage: package
   image: maven:3.8.5-jdk-8
+  only: 
+    - master
   tags:
     - runner-123
   script:
@@ -170,6 +188,8 @@ package-job:       # This job runs in the build stage, which runs first.
 build-job:
   stage: build
   image: docker
+  only: 
+    - master
   dependencies:
     - package-job
   tags:
@@ -185,6 +205,8 @@ build-job:
 deploy-job:      # This job runs in the deploy stage.
   stage: deploy
   image: docker
+  only: 
+    - master
   tags:
     - runner-123
   script:
