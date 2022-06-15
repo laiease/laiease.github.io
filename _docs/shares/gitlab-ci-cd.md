@@ -203,3 +203,21 @@ deploy-job:      # This job runs in the deploy stage.
 > 2. docker镜像。不要怀疑，镜像名字就是[docker](https://registry.hub.docker.com/_/docker)，要在docker中进行docker操作，需要docker in docker 。
 >
 > 3. artifacts 的配置，在job中传递构建物，使用artifacts是比较方便的，这里需要注意的就是在任务中取artifacts时的路径问题。
+
+由于示例中使用了docker构建，这是提供一下Dockerfile的写法：
+
+```dockerfile
+FROM openjdk:8u322
+
+RUN mkdir /opt/app
+
+ARG JAR_PATH
+COPY $JAR_PATH /opt/app/app.jar
+
+WORKDIR /opt/app
+
+ARG PORT
+EXPOSE $PORT
+
+CMD [ "java", "-jar", "app.jar" ]
+```
