@@ -1,5 +1,5 @@
 ---
-title:  Docker基础
+title:  基于Docker实现GitLab CI/CD功能
 permalink: /docs/gitlab-ci-cd/
 ---
 
@@ -82,7 +82,7 @@ Runner registered successfully. Feel free to start it, but if it's running alrea
 
 其中是通过 `GitLab` 来找到的，首先进入到需要设置 `CI/CD` 的项目，然后按照下图流程即可找到。
 
-<img src="/asstes/img/gitlab-ci-cd.png" alt="gitlab-ci-cd" style="zoom:80%;" />
+<img src="/assets/img/gitlab-ci-cd.png" alt="gitlab-ci-cd" style="zoom:80%;" />
 
 注册成功后，可以在`/data/gitlab/gitlab-runner/config`下找到Runner的配置文件`config.toml`
 
