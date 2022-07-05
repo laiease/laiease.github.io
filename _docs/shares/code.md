@@ -141,14 +141,25 @@ public class StudentService{
  private boolean isLock;
 ```
 
-**7.参数太多要使用对象 **
+**7.参数太多要使用对象**
 
 - 无论是 `controller` , `service` , `dao` 还是其他的代码，每个方法最多 `3` 个参数，如果超出 `3` 个参数的话，建议封装成 `javabean` 对象。   
 - 不推荐直接使用 `JSONObject` , `Map<String,Object>` 等直接作为方法参数。  
-- 
+
 **8.entity层类型定义不要采用基本数据类型**
 
 反例
+```java
+public class User{
+  private int id;
+  private String name;
+  private long orderNo;
+  private boolean admin;
+
+}
+```
+
+正例
 ```java
 public class User{
   private Interget id;
