@@ -4,11 +4,11 @@ permalink: /docs/shares-code/
 ---
 
 ### Java 开发规范
-
+<br/>
 #### 1. 命名规范
-
+<br/>
 #### 1.1. 函数命名规范
-
+<br/>
 ##### 1.1.1. 命名的意义
 &ensp;&ensp;函数命名要具体,空泛的命名没有意义。例如,processData()就不是一个好的命名,因为所有的方法都是对数据的处理,这样的命名并没有表明要做的事情,相比之下,validateUserCredentials()或者eliminateDuplicateRequests()就要好许多。   
 <br/>
