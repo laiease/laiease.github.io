@@ -9,7 +9,8 @@ permalink: /docs/shares-code/
 #### 函数命名规范
 
 ##### 1. 命名的意义
-&ensp;&ensp;函数命名要具体,空泛的命名没有意义。例如,processData()就不是一个好的命名,因为所有的方法都是对数据的处理,这样的命名并没有表明要做的事情,相比之下,validateUserCredentials()或者eliminateDuplicateRequests()就要好许多。    
+&ensp;&ensp;函数命名要具体,空泛的命名没有意义。例如,processData()就不是一个好的命名,因为所有的方法都是对数据的处理,这样的命名并没有表明要做的事情,相比之下,validateUserCredentials()或者eliminateDuplicateRequests()就要好许多。   
+</br>
 &ensp;&ensp;函数的命名要体现做什么,而不是怎么做。假如我们将雇员信息存储在一个栈中,现在要从栈中获取最近存储的一个雇员信息,那么getLatestEmployee()就比popRecord()要好,因为栈数据结构是底层实现细节,命名应该提升抽象层次、体现业务语义。合理的命名可以使你省掉记住“出栈”的脑力步骤,你只需要简单地说“取最近雇员的信息”。
    
 
@@ -83,16 +84,21 @@ permalink: /docs/shares-code/
 
 #####  4. 后置限定词
 &ensp;&ensp;很多程序中会有表示计算结果的变量,例如总额、平均值、最大值等。如果你要用类似Total、Sum、Average、Max、Min这样的限定词来修改某个命名,那么记住把限定词加到名字的最后,并在项目中贯彻执行,保持命名风格的一致性。   
+</br>
 &ensp;&ensp;这种方法有很多优点。首先,变量名中最重要的部分,即为这一变量赋予主要含义的部分应位于最前面,这样可以突出显示,并会被首先阅读到。其次,可以避免同时在程序中使用totalRevenue和revenueTotal 而产生的歧义。如果贯彻限定词后置的原则,我们就能收获一组非常优雅、具有对称性的变量命名,例如revenueTotal(总收入)、expenseTotal(总支出)、revenueAverage(平均收入)和expenseAverage(平均支出)。   
+</br>
 &ensp;&ensp;需要注意的一点是Num这个限定词,Num放在变量名的结束位置表示一个下标,customerNum表示的是当前客户的序号。为了避免Num带来的麻烦,我建议用Count或者Total来表示总数,用Id表示序号。这样,customerCount表示客户的总数,customerId表示客户的编号。   
-
+</br>
 
 #### 类命名规范
 &ensp;&ensp;类是面向对象中最重要的概念之一,是一组数据和操作的封装。对于一个应用系统,我们可以将类分为两大类:实体类和辅助类。    
+</br>
 &ensp;&ensp;实体类承载了核心业务数据和核心业务逻辑,其命名要充分体现业务语义,并在团队内达成共识,如Customer、Bank和Employee等。     
+</br>
 &ensp;&ensp;辅助类是辅佐实体类一起完成业务逻辑的,其命名要能够通过后缀来体现功能。例如,用来为Customer做控制路由的控制类CustomerController、提供Customer服务的服务类CustomerService、获取数据存储的仓储类CustomerRepository。   
-   
+</br>
 &ensp;对于辅助类,尽量不要用Helper、Util之类的后缀,因为其含义太过笼统,容易破坏SRP(单一职责原则)。    
+</br>
 &ensp;比如对于处理CSV,可以这样写:    
 ```
       CSVHelper.parse(String) 
@@ -108,15 +114,19 @@ permalink: /docs/shares-code/
 #### 包名规范
 
 &ensp;&ensp;包(Package)代表了一组有关系的类的集合,起到分类组合和命名空间的作用。在JavaScript的早期阶段,因为缺乏明确的分包机制,导致程序(特别是大型程序)很容易陷入混乱。     
+</br>
 &ensp;&ensp;包名应该能够反映一组类在更高抽象层次上的联系。例如,有一组类Apple、Pear、Orange,我们可以将它们放在一个包中,命名为fruit。    
+</br>
 &ensp;&ensp;包的命名要适中,不能太抽象,也不能太具体。此处以上面提到的水果作为例子,如果包名过于具体,比如Apple,那么Pear和Orange放进该包中就不恰当了;如果报名太抽象,称为Object,而Object无所不包,这就失去了包用来限定范围的作用。   
+</br>
    
 #### 模块名规范
 
 &ensp;&ensp;这里说的模块(Module)主要是指Maven中的Module,相对于包来说,模块的粒度更大,通常一个模块中包含了多个包。    
+</br>
 &ensp;&ensp;在Maven中,模块名就是一个坐标: <groupId, artifactId>。一方面, 其名称保证了模块在Maven仓库中的唯一性;另一方面,名称要反映模块在系统中的职责。例如,在COLA架构中,模块代表着架构层次,因此,对任何应该遵循COLA规范的应用都有着xxx-controller、xxx-app、xxx-domain和xxx-Infrastructure这4个标准模块。   
-
- <img width="278" alt="image" src="https://user-images.githubusercontent.com/5245347/177231695-3483092a-6a7c-42a6-9502-34d6654d261e.png">
+</br>
+<img width="278" alt="image" src="https://user-images.githubusercontent.com/5245347/177231695-3483092a-6a7c-42a6-9502-34d6654d261e.png">
 
 
 #### 场景举例说明 
@@ -517,7 +527,7 @@ public class StudentEntity{
 ##### 1. 日志规范
 
 &ensp;&ensp;日志的重要性很容易被开发人员忽视,写好程序的日志可以帮助我们大大减轻后期维护的压力。在实际工作中,开发人员往往迫于时间压力,认为写日志是一件非常烦琐的事情,往往没有足够的重视,导致日志文件管理混乱、日志输出格式不统一,结果在出现故障时影响工作效率。开发人员应在一开始就养成良好的撰写日志的习惯,并在实际的开发工作中为写日志预留足够的时间。       
-
+</br>
 &ensp;&ensp;在打印日志时,要特别注意日志输出级别,这是系统运维的需要。详细的日志输出级别分为OFF、FATAL、ERROR、WARN、INFO、DEBUG、ALL或者自定义的级别。我认为比较有用的4个级别依次是ERROR、WARN、INFO和DEBUG。通常这4个级别就能够很好地满足我们的需求了。    
 
 * 日志分级
@@ -537,27 +547,29 @@ public class StudentEntity{
 
 ##### 2. ERROR级别
 
-&ensp;&ensp;ERROR表示不能自己恢复的错误,需要立即被关注和解决。例如,数据库操作错误、I/O错误(网络调用超时、文件读取错误等)、未知的系统错误(NullPointerException、OutOfMemoryError等)。
-对于ERROR,我们不仅要打印线程堆栈,最好打印出一定的上下文(链路TraceId、用户Id、订单Id、外部传来的关键数据),以便于排查问题。    
-
+&ensp;&ensp;ERROR表示不能自己恢复的错误,需要立即被关注和解决。例如,数据库操作错误、I/O错误(网络调用超时、文件读取错误等)、未知的系统错误(NullPointerException、OutOfMemoryError等)。对于ERROR,我们不仅要打印线程堆栈,最好打印出一定的上下文(链路TraceId、用户Id、订单Id、外部传来的关键数据),以便于排查问题。    
+</br>
 &ensp;&ensp;ERROR要接入监控和报警系统。ERROR需要人工介入处理,及时止损,否则会影响系统的可用性。当然也不能滥用ERROR,否则就会出现“狼来了”的情况。我在实际工作中曾碰到过系统每天会发出上千条错误报警的情况,导致根本没有人看报警内容,在真正出现问题时,也没有人关注,从而引发线上故障。因此,一定要做好ERROR输出的场景定义和规范,再配合监控治理,双管齐下,确保线上系统的稳定。   
 
 
 ##### 3. WARN级别
 
 &ensp;&ensp;对于可预知的业务问题,最好不要用ERROR输出日志,以免污染报警系统。例如,参数校验不通过、没有访问权限等业务异常,就不应该用ERROR输出。    
+</br>
 &ensp;&ensp;需要注意的是,在短时间内产生过多的WARN日志,也是一种系统不健康的表现。因此,我们有必要为WARN配置一个适当阈值的报警, 比如访问受限WARN超过100次/分,则发出报警。这样在WARN日志过于频繁时,我们能及时收到系统报警,去跟进用户问题。例如,如果是产品设计上有缺陷导致用户频繁出现操作卡点,可以考虑做一下流程或者产品上的优化。   
-
+</br>
 ##### 4. INFO级
 
-&ensp;&ensp;INFO用于记录系统的基本运行过程和运行状态。    
+&ensp;&ensp;INFO用于记录系统的基本运行过程和运行状态。
+</br>
 &ensp;&ensp;通常来说,优先根据INFO日志可初步定位,主要包括系统状态变化日志、业务流程的核心处理、关键动作和业务流程的状态变化。适当的INFO可以协助我们排查问题,但是切忌把INFO当成DEBUG使用,这样会导致记录的数据过多,一方面影响系统性能,日志文件增长过快, 消耗不必要的存储资源;另一方面也不利于阅读日志文件。   
-
+</br>
 ##### 5. DEBUG级别
 
 &ensp;&ensp;DEBUG是输出调试信息,如request/response的对象内容。在输出对象内容时,要覆盖Object的toString方法,否则输出的是对象的内存地址,就起不到调试的作用了。    
+</br>
 &ensp;&ensp;通常在开发和预发环境下,DEBUG日志会打开,以方便开发和调试。而在线上环境,DEBUG开关需要关闭,因为在生产环境下开启DEBUG会导致日志量非常大,其损耗是难以接受的。只有当线上出现bug或者棘手的问题时,才可以动态地开启DEBUG。为了防止日志量过大,我们可以采用分布式配置工具来实现基于requestId判断的日志过滤,从而只打印我们所需请求的DEBUG日志。    
-
+</br>
 ##### 6. 使用要求说明
 
 * 日志使用
