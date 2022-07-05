@@ -10,7 +10,7 @@ permalink: /docs/shares-code/
 
 ##### 1. 命名的意义
 
-$nbsp;$nbsp;$nbsp;$nbsp;函数命名要具体,空泛的命名没有意义。例如,processData()就不是一个好的命名,因为所有的方法都是对数据的处理,这样的命名并没有表明要做的事情,相比之下,validateUserCredentials()或者eliminateDuplicateRequests()就要好许多。    
+<label>$nbsp;$nbsp;$nbsp;</label>函数命名要具体,空泛的命名没有意义。例如,processData()就不是一个好的命名,因为所有的方法都是对数据的处理,这样的命名并没有表明要做的事情,相比之下,validateUserCredentials()或者eliminateDuplicateRequests()就要好许多。    
 $nbsp;$nbsp;$nbsp;$nbsp;函数的命名要体现做什么,而不是怎么做。假如我们将雇员信息存储在一个栈中,现在要从栈中获取最近存储的一个雇员信息,那么getLatestEmployee()就比popRecord()要好,因为栈数据结构是底层实现细节,命名应该提升抽象层次、体现业务语义。合理的命名可以使你省掉记住“出栈”的脑力步骤,你只需要简单地说“取最近雇员的信息”。
    
 
