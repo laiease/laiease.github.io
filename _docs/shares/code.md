@@ -92,8 +92,45 @@ permalink: /docs/shares-code/
 &ensp;&ensp;需要注意的一点是Num这个限定词,Num放在变量名的结束位置表示一个下标,customerNum表示的是当前客户的序号。为了避免Num带来的麻烦,我建议用Count或者Total来表示总数,用Id表示序号。这样,customerCount表示客户的总数,customerId表示客户的编号。   
 <br/>
 
+### 1.2 类命名规范
+&ensp;&ensp;类是面向对象中最重要的概念之一,是一组数据和操作的封装。对于一个应用系统,我们可以将类分为两大类:实体类和辅助类。    
+<br/>
+&ensp;&ensp;实体类承载了核心业务数据和核心业务逻辑,其命名要充分体现业务语义,并在团队内达成共识,如Customer、Bank和Employee等。     
+<br/>
+&ensp;&ensp;辅助类是辅佐实体类一起完成业务逻辑的,其命名要能够通过后缀来体现功能。例如,用来为Customer做控制路由的控制类CustomerController、提供Customer服务的服务类CustomerService、获取数据存储的仓储类CustomerRepository。   
+<br/>
+&ensp;对于辅助类,尽量不要用Helper、Util之类的后缀,因为其含义太过笼统,容易破坏SRP(单一职责原则)。    
+<br/>
+&ensp;比如对于处理CSV,可以这样写:    
+```
+      CSVHelper.parse(String) 
+      CSVHelper.create(int[])
+```
+&ensp;但是我更建议将CSVHelper拆开:   
+```
+      CSVParser.parse(String)
+      CSVBuilder.create(int[])
+```
 
-#### 1.1.5 约束说明 
+
+### 1.3 包名规范
+
+&ensp;&ensp;包(Package)代表了一组有关系的类的集合,起到分类组合和命名空间的作用。在JavaScript的早期阶段,因为缺乏明确的分包机制,导致程序(特别是大型程序)很容易陷入混乱。     
+<br/>
+&ensp;&ensp;包名应该能够反映一组类在更高抽象层次上的联系。例如,有一组类Apple、Pear、Orange,我们可以将它们放在一个包中,命名为fruit。    
+<br/>
+&ensp;&ensp;包的命名要适中,不能太抽象,也不能太具体。此处以上面提到的水果作为例子,如果包名过于具体,比如Apple,那么Pear和Orange放进该包中就不恰当了;如果报名太抽象,称为Object,而Object无所不包,这就失去了包用来限定范围的作用。   
+<br/>
+   
+### 1.4 模块名规范
+
+&ensp;&ensp;这里说的模块(Module)主要是指Maven中的Module,相对于包来说,模块的粒度更大,通常一个模块中包含了多个包。    
+<br/>
+&ensp;&ensp;在Maven中,模块名就是一个坐标: <groupId, artifactId>。一方面, 其名称保证了模块在Maven仓库中的唯一性;另一方面,名称要反映模块在系统中的职责。例如,在COLA架构中,模块代表着架构层次,因此,对任何应该遵循COLA规范的应用都有着xxx-controller、xxx-app、xxx-domain和xxx-Infrastructure这4个标准模块。   
+<br/>
+<img width="278" alt="image" src="https://user-images.githubusercontent.com/5245347/177231695-3483092a-6a7c-42a6-9502-34d6654d261e.png">
+
+### 1.5 约束说明 
 
 **1.所有命名严禁使用拼音与英文混合的方式，更不允许直接使用中文拼音的方式。**
 
@@ -169,45 +206,6 @@ public class User{
   private Boolean admin;
 }
 ```
-
-### 1.2 类命名规范
-&ensp;&ensp;类是面向对象中最重要的概念之一,是一组数据和操作的封装。对于一个应用系统,我们可以将类分为两大类:实体类和辅助类。    
-<br/>
-&ensp;&ensp;实体类承载了核心业务数据和核心业务逻辑,其命名要充分体现业务语义,并在团队内达成共识,如Customer、Bank和Employee等。     
-<br/>
-&ensp;&ensp;辅助类是辅佐实体类一起完成业务逻辑的,其命名要能够通过后缀来体现功能。例如,用来为Customer做控制路由的控制类CustomerController、提供Customer服务的服务类CustomerService、获取数据存储的仓储类CustomerRepository。   
-<br/>
-&ensp;对于辅助类,尽量不要用Helper、Util之类的后缀,因为其含义太过笼统,容易破坏SRP(单一职责原则)。    
-<br/>
-&ensp;比如对于处理CSV,可以这样写:    
-```
-      CSVHelper.parse(String) 
-      CSVHelper.create(int[])
-```
-&ensp;但是我更建议将CSVHelper拆开:   
-```
-      CSVParser.parse(String)
-      CSVBuilder.create(int[])
-```
-
-
-### 1.3 包名规范
-
-&ensp;&ensp;包(Package)代表了一组有关系的类的集合,起到分类组合和命名空间的作用。在JavaScript的早期阶段,因为缺乏明确的分包机制,导致程序(特别是大型程序)很容易陷入混乱。     
-<br/>
-&ensp;&ensp;包名应该能够反映一组类在更高抽象层次上的联系。例如,有一组类Apple、Pear、Orange,我们可以将它们放在一个包中,命名为fruit。    
-<br/>
-&ensp;&ensp;包的命名要适中,不能太抽象,也不能太具体。此处以上面提到的水果作为例子,如果包名过于具体,比如Apple,那么Pear和Orange放进该包中就不恰当了;如果报名太抽象,称为Object,而Object无所不包,这就失去了包用来限定范围的作用。   
-<br/>
-   
-### 1.4 模块名规范
-
-&ensp;&ensp;这里说的模块(Module)主要是指Maven中的Module,相对于包来说,模块的粒度更大,通常一个模块中包含了多个包。    
-<br/>
-&ensp;&ensp;在Maven中,模块名就是一个坐标: <groupId, artifactId>。一方面, 其名称保证了模块在Maven仓库中的唯一性;另一方面,名称要反映模块在系统中的职责。例如,在COLA架构中,模块代表着架构层次,因此,对任何应该遵循COLA规范的应用都有着xxx-controller、xxx-app、xxx-domain和xxx-Infrastructure这4个标准模块。   
-<br/>
-<img width="278" alt="image" src="https://user-images.githubusercontent.com/5245347/177231695-3483092a-6a7c-42a6-9502-34d6654d261e.png">
-
 
 ### 2. 分层规范
 
@@ -350,7 +348,6 @@ public class UserVO{
       private String name;
    }
 }
-
 ```
 
 #### 2.3. service
@@ -550,7 +547,6 @@ public class StudentEntity{
         }
         return user.getId();
     }
-
 ```
 
 
@@ -564,8 +560,6 @@ public class StudentEntity{
         }
         return user.getId();
     }
-
-
 ```
 
  
