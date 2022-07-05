@@ -5,21 +5,18 @@ permalink: /docs/shares-code/
 
 ### Java 开发规范
 
-#### 命名规范
 
-**所有命名严禁使用拼音与英文混合的方式，更不允许直接使用中文拼音的方式。**
+#### 函数命名规范
 
-正例：`jinan / beijing / rmb 等国际通用的名称，可视同英文。`
+##### 1. 命名的意义
 
-反例：`DaZhePromotion [打折] / getPingfenByName() [评分] / int 某变量 = 3`
+   函数命名要具体,空泛的命名没有意义。例如,processData()就不是一个好的命名,因为所有的方法都是对数据的处理,这样的命名并没有表明要做的事情,相比之下,validateUserCredentials()或者eliminateDuplicateRequests()就要好许多。
+   函数的命名要体现做什么,而不是怎么做。假如我们将雇员信息存储在一个栈中,现在要从栈中获取最近存储的一个雇员信息,那么getLatestEmployee()就比popRecord()要好,因为栈数据结构是底层实现细节,命名应该提升抽象层次、体现业务语义。合理的命名可以使你省掉记住“出栈”的脑力步骤,你只需要简单地说“取最近雇员的信息”。
+   
 
-**杜绝完全不规范的缩写，避免望文不知义：**
+##### 2. 命名统一性
 
-反例：condition"缩写"命名成 condi，此类随意缩写严重降低了代码的可阅读性。
-
-#####  1. 方法名称
-
-  个概念对应一个词,并且一以贯之。例如,fetch、retrieve、get、find和query都可以表示查询的意思,如果不加约定地给多个类中的同种查询方法命名,你怎么记得是哪个类中的哪个方法呢?同样,在一段代码中,同时存在manager、controller和handler,会令人感到困惑。因此在项目中,通常按照表1-1所示的约定,保持命名的一致性。
+  每个概念对应一个词,并且一以贯之。例如,fetch、retrieve、get、find和query都可以表示查询的意思,如果不加约定地给多个类中的同种查询方法命名,你怎么记得是哪个类中的哪个方法呢?同样,在一段代码中,同时存在manager、controller和handler,会令人感到困惑。因此在项目中,通常按照表如下所示的约定,保持命名的一致性。
   
 <table>
   <thead>
@@ -64,7 +61,7 @@ permalink: /docs/shares-code/
   </tbody>
 </table>
 
-#####  2. 使用对仗词
+#####  3. 使用对仗词
    遵守对仗词的命名规则有助于保持一致性,从而提高代码的可读性。像first/last这样的对仗词就很容易理解;而像fileOpen()和fClose()这样的组合则不对称,容易使人迷惑。下面列出一些常见的对仗词组:
    
 * add/remove 
@@ -83,6 +80,57 @@ permalink: /docs/shares-code/
 * next/previous 
 * up/down 
 * old/new
+
+#####  4. 后置限定词
+    很多程序中会有表示计算结果的变量,例如总额、平均值、最大值等。如果你要用类似Total、Sum、Average、Max、Min这样的限定词来修改某个命名,那么记住把限定词加到名字的最后,并在项目中贯彻执行,保持命名风格的一致性。   
+   这种方法有很多优点。首先,变量名中最重要的部分,即为这一变量赋予主要含义的部分应位于最前面,这样可以突出显示,并会被首先阅读到。其次,可以避免同时在程序中使用totalRevenue和revenueTotal 而产生的歧义。如果贯彻限定词后置的原则,我们就能收获一组非常优雅、具有对称性的变量命名,例如revenueTotal(总收入)、expenseTotal(总支出)、revenueAverage(平均收入)和expenseAverage(平均支出)。   
+   需要注意的一点是Num这个限定词,Num放在变量名的结束位置表示一个下标,customerNum表示的是当前客户的序号。为了避免Num带来的麻烦,我建议用Count或者Total来表示总数,用Id表示序号。这样,customerCount表示客户的总数,customerId表示客户的编号。   
+
+
+#### 类命名规范
+   类是面向对象中最重要的概念之一,是一组数据和操作的封装。对于一个应用系统,我们可以将类分为两大类:实体类和辅助类。  
+   实体类承载了核心业务数据和核心业务逻辑,其命名要充分体现业务语义,并在团队内达成共识,如Customer、Bank和Employee等。   
+   辅助类是辅佐实体类一起完成业务逻辑的,其命名要能够通过后缀来体现功能。例如,用来为Customer做控制路由的控制类CustomerController、提供Customer服务的服务类CustomerService、获取数据存储的仓储类CustomerRepository。
+   
+   对于辅助类,尽量不要用Helper、Util之类的后缀,因为其含义太过笼统,容易破坏SRP(单一职责原则)。
+   比如对于处理CSV,可以这样写: 
+```
+      CSVHelper.parse(String) 
+      CSVHelper.create(int[])
+```
+   但是我更建议将CSVHelper拆开:
+```
+      CSVParser.parse(String)
+      CSVBuilder.create(int[])
+```
+
+
+#### 包名规范
+
+   包(Package)代表了一组有关系的类的集合,起到分类组合和命名空间的作用。在JavaScript的早期阶段,因为缺乏明确的分包机制,导致程序(特别是大型程序)很容易陷入混乱。   
+   包名应该能够反映一组类在更高抽象层次上的联系。例如,有一组类Apple、Pear、Orange,我们可以将它们放在一个包中,命名为fruit。   
+   包的命名要适中,不能太抽象,也不能太具体。此处以上面提到的水果作为例子,如果包名过于具体,比如Apple,那么Pear和Orange放进该包中就不恰当了;如果报名太抽象,称为Object,而Object无所不包,这就失去了包用来限定范围的作用。   
+   
+#### 模块名规范
+
+   这里说的模块(Module)主要是指Maven中的Module,相对于包来说,模块的粒度更大,通常一个模块中包含了多个包。   
+   在Maven中,模块名就是一个坐标: <groupId, artifactId>。一方面, 其名称保证了模块在Maven仓库中的唯一性;另一方面,名称要反映模块在系统中的职责。例如,在COLA架构中,模块代表着架构层次,因此,对任何应该遵循COLA规范的应用都有着xxx-controller、xxx-app、xxx-domain和xxx-Infrastructure这4个标准模块。
+
+ <img width="278" alt="image" src="https://user-images.githubusercontent.com/5245347/177231695-3483092a-6a7c-42a6-9502-34d6654d261e.png">
+
+
+**所有命名严禁使用拼音与英文混合的方式，更不允许直接使用中文拼音的方式。**
+
+正例：`jinan / beijing / rmb 等国际通用的名称，可视同英文。`
+
+反例：`DaZhePromotion [打折] / getPingfenByName() [评分] / int 某变量 = 3`
+
+**杜绝完全不规范的缩写，避免望文不知义：**
+
+反例：condition"缩写"命名成 condi，此类随意缩写严重降低了代码的可阅读性。
+
+#####  1. 方法命名
+
 
 **常见方法的前缀**
 
