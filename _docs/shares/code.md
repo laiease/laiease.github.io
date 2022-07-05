@@ -125,7 +125,6 @@ $nbsp;$nbsp;$nbsp;$nbsp;在Maven中,模块名就是一个坐标: <groupId, artif
 **所有命名严禁使用拼音与英文混合的方式，更不允许直接使用中文拼音的方式。**
 
 正例：`jinan / beijing / rmb 等国际通用的名称，可视同英文。`   
-
 反例：`DaZhePromotion [打折] / getPingfenByName() [评分] / int 某变量 = 3`.  
 
 **杜绝完全不规范的缩写，避免望文不知义：**
@@ -456,58 +455,74 @@ public class StudentEntity{
 
 #### 异常定义规范
 
-异常分类两个基本类：返回给前端错误信息的 `MessageException` ，后台出现异常的 `BaseException` 。
+异常分类两个种：返回给前端错误信息的 `LocalMessageException` ，以及业务后台出现的异常的 `Exception` 。
 
-- MessageException
+- LocalMessageException （uncheckexception）
   - 用在controller层返回给前台提示。
-  - 需要包含 错误码 `errorCode` 和**给用户展示的**错误提示信息 `errorMessage`。
-- BaseException
+  - 需要包含 错误码 `errorCode` 和**给用户展示的**错误提示信息 `errorMessage`。 [LocalMessageException](https://github.com/codingapi/springboot-framework)支持国际化 
+- Exception （checkexception）
   - 用在service层以及以下，用于找到出错的位置。
   - 需要包含**给程序员调试的**错误提示信息和堆栈信息。
+
+在Service层以下出现的异常，都是业务异常。这些异常都是checkexception，需要try catch完成异常的处理。当service层的异常传递到controller层时就需要返回LocalMessageException。
+LocalMessageException是给用户提示的异常，不允许展示程序内部异常堆栈信息，要给用户以友好的提示。尽量让用户清楚如何解决该问题。
+
 
 ##### 1.  应该抛出异常的的情况
 
 1.无法通过参数检查。
-
 2.可能导致以后的相关功能出错。
-
-3.本方法没有处理异常的能力，让调用方处理。
+3.本方法没有处理异常的能力，让调用方处理。即：将底层的异常继续往上抛
 
 ##### 2.  什么时候自定义异常类
 
 1.出现特定于业务的异常状态时候。
-
 比如，在超出自定义时间范围内时，创建并且抛出一个`InvalidDateRangeException`。
-
 2.错误处理需要定制信息以提供给与用户（开发人员或者最终用户）。
+
+##### 3.  异常场景举例说明
+
+
+反例
+```java
+     
+    int getUserId(String username){
+        User user =  userDao.getUserByUserName(username);
+        if(user==null){
+            return 0;
+        }
+        return user.getId();
+    }
+
+```
+
+
+正例 
+```java
+     
+    int getUserId(String username){
+        User user =  userDao.getUserByUserName(username);
+        if(user==null){
+            throw new UserNotFundException(String.format("can't find user :%s",username));
+        }
+        return user.getId();
+    }
+
+
+```
+
+ 
 
 #### 日志记录规范
 
-##### 1. 需要记录日志的情况
+##### 1. 日志规范
 
-- 登录成功和失败
-- 注销
-- 密码更改和重置
-- 创建和删除用户
-- 授权失败
-- 访问级别更改
-- catch中
+$nbsp;$nbsp;$nbsp;$nbsp;日志的重要性很容易被开发人员忽视,写好程序的日志可以帮助我们大大减轻后期维护的压力。在实际工作中,开发人员往往迫于时间压力,认为写日志是一件非常烦琐的事情,往往没有足够的重视,导致日志文件管理混乱、日志输出格式不统一,结果在出现故障时影响工作效率。开发人员应在一开始就养成良好的撰写日志的习惯,并在实际的开发工作中为写日志预留足够的时间。
 
-此外，还应该记录可以指向特定攻击的指标。
 
-- 输入验证错误：识别导致 XSS 攻击的脚本标签，或 UNION 等指示 SQL 注入的参数
-- HTTP 4xx 和 5xx 响应
+$nbsp;$nbsp;$nbsp;$nbsp;在打印日志时,要特别注意日志输出级别,这是系统运维的需要。详细的日志输出级别分为OFF、FATAL、ERROR、WARN、INFO、DEBUG、ALL或者自定义的级别。我认为比较有用的4个级别依次是ERROR、WARN、INFO和DEBUG。通常这4个级别就能够很好地满足我们的需求了。
 
-##### 2. 需要记录的内容
-
-- 调用的方法名
-- 方法参数
-- 状态 （成功或者失败）
-- 操作时间
-
-##### 3. 记录规范
-
-1.日志分级
+* 日志分级
 
 1. `fatal` - 严重的，造成服务中断的错误；
 
@@ -521,7 +536,34 @@ public class StudentEntity{
 
 6. `trace` - 更详细的跟踪信息；
 
-2.可直接使用日志系统（Log4j、Logback）中的API，而应依赖使用日志框架SLF4J中的API，使用门面模式的日志框架，有利于维护和各个类的日志处理方式统一。
+
+##### 2. ERROR级别
+
+ERROR表示不能自己恢复的错误,需要立即被关注和解决。例如,数据库操作错误、I/O错误(网络调用超时、文件读取错误等)、未知的系统错误(NullPointerException、OutOfMemoryError等)。
+对于ERROR,我们不仅要打印线程堆栈,最好打印出一定的上下文(链路TraceId、用户Id、订单Id、外部传来的关键数据),以便于排查问题。
+ERROR要接入监控和报警系统。ERROR需要人工介入处理,及时止损,否则会影响系统的可用性。当然也不能滥用ERROR,否则就会出现“狼来了”的情况。我在实际工作中曾碰到过系统每天会发出上千条错误报警的情况,导致根本没有人看报警内容,在真正出现问题时,也没有人关注,从而引发线上故障。因此,一定要做好ERROR输出的场景定义和规范,再配合监控治理,双管齐下,确保线上系统的稳定。
+
+
+##### 3. WARN级别
+
+对于可预知的业务问题,最好不要用ERROR输出日志,以免污染报警系统。例如,参数校验不通过、没有访问权限等业务异常,就不应该用ERROR输出。
+需要注意的是,在短时间内产生过多的WARN日志,也是一种系统不健康的表现。因此,我们有必要为WARN配置一个适当阈值的报警, 比如访问受限WARN超过100次/分,则发出报警。这样在WARN日志过于频繁时,我们能及时收到系统报警,去跟进用户问题。例如,如果是产品设计上有缺陷导致用户频繁出现操作卡点,可以考虑做一下流程或者产品上的优化。
+
+##### 4. INFO级
+INFO用于记录系统的基本运行过程和运行状态。
+通常来说,优先根据INFO日志可初步定位,主要包括系统状态变化日志、业务流程的核心处理、关键动作和业务流程的状态变化。适当的INFO可以协助我们排查问题,但是切忌把INFO当成DEBUG使用,这样会导致记录的数据过多,一方面影响系统性能,日志文件增长过快, 消耗不必要的存储资源;另一方面也不利于阅读日志文件。
+
+
+##### 5. DEBUG级别
+
+
+DEBUG是输出调试信息,如request/response的对象内容。在输出对象内容时,要覆盖Object的toString方法,否则输出的是对象的内存地址,就起不到调试的作用了。
+通常在开发和预发环境下,DEBUG日志会打开,以方便开发和调试。而在线上环境,DEBUG开关需要关闭,因为在生产环境下开启DEBUG会导致日志量非常大,其损耗是难以接受的。只有当线上出现bug或者棘手的问题时,才可以动态地开启DEBUG。为了防止日志量过大,我们可以采用分布式配置工具来实现基于requestId判断的日志过滤,从而只打印我们所需请求的DEBUG日志。
+
+##### 6. 使用要求说明
+
+* 日志使用
+$nbsp;$nbsp;$nbsp;$nbsp;可直接使用日志系统（Log4j、Logback）中的API，而应依赖使用日志框架SLF4J中的API，使用门面模式的日志框架，有利于维护和各个类的日志处理方式统一。
 
 ```java
 import org.slf4j.Logger;
@@ -530,7 +572,7 @@ import org.slf4j.LoggerFactory;
 private static final Logger log = LoggerFactory.getLogger(Test.class);
 ```
 
-3.使用占位符 `{}` 拼接字符串，而不是使用加号 `+` 拼接
+* 使用占位符 `{}` 拼接字符串，而不是使用加号 `+` 拼接
 
 ```java
 public void function(String param) {
@@ -538,12 +580,15 @@ public void function(String param) {
 }
 ```
 
-4.禁止使用 `exception.printStackTrace()`
+* 禁止使用 `exception.printStackTrace()`
 
-5.异常信息应该包括两类信息：案发现场信息和异常堆栈信息。如果不处理，那么往上抛。
+* 异常信息应该包括两类信息：案发现场信息和异常堆栈信息。如果不处理，那么往上抛。
 
 ```java
 logger.error(各类参数或者对象toString + "_" + e.getMessage(), e);
 ```
 
-6.禁止出现 `System.print`(包括System.out.println和System.err.println)语句。
+* 禁止出现 `System.print`(包括System.out.println和System.err.println)语句。
+
+
+
