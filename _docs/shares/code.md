@@ -92,6 +92,73 @@ permalink: /docs/shares-code/
 &ensp;&ensp;需要注意的一点是Num这个限定词,Num放在变量名的结束位置表示一个下标,customerNum表示的是当前客户的序号。为了避免Num带来的麻烦,我建议用Count或者Total来表示总数,用Id表示序号。这样,customerCount表示客户的总数,customerId表示客户的编号。   
 <br/>
 
+
+#### 1.1.5 约束说明 
+
+**1.所有命名严禁使用拼音与英文混合的方式，更不允许直接使用中文拼音的方式。**
+
+正例：`jinan / beijing / rmb 等国际通用的名称，可视同英文。`   
+反例：`DaZhePromotion [打折] / getPingfenByName() [评分] / int 某变量 = 3`.  
+
+**2.杜绝完全不规范的缩写，避免望文不知义：**
+
+反例：condition"缩写"命名成 condi，此类随意缩写严重降低了代码的可阅读性。    
+
+**3.函数命名推荐动词在前，名词在后.**  
+
+```java
+void importExcel(Excel excel); 
+```
+
+**4.dao层可以省略名词**   
+
+```java
+public interface StudentMapper {
+    int save(Student student);
+   
+    List<Student> findList();
+   
+    int edit(Student student);
+}
+```
+
+**5.service层要写操作的实体名。**   
+
+```java
+public class StudentService{
+    void saveStudent(Student student){}
+    
+    List<Student> findListStudent(){}
+    
+    void editStudent(Student student)(){}
+}
+```
+
+**6.boolean类型变量都不要加 `is`**
+
+反例
+```java
+ private boolean isLock;
+```
+
+**7.参数太多要使用对象 **
+
+- 无论是 `controller` , `service` , `dao` 还是其他的代码，每个方法最多 `3` 个参数，如果超出 `3` 个参数的话，建议封装成 `javabean` 对象。   
+- 不推荐直接使用 `JSONObject` , `Map<String,Object>` 等直接作为方法参数。  
+- 
+**8.entity层类型定义不要采用基本数据类型**
+
+反例
+```java
+public class User{
+  private Interget id;
+  private String name;
+  private Long orderNo;
+  private Boolean admin;
+
+}
+```
+
 ### 1.2 类命名规范
 &ensp;&ensp;类是面向对象中最重要的概念之一,是一组数据和操作的封装。对于一个应用系统,我们可以将类分为两大类:实体类和辅助类。    
 <br/>
@@ -129,58 +196,6 @@ permalink: /docs/shares-code/
 &ensp;&ensp;在Maven中,模块名就是一个坐标: <groupId, artifactId>。一方面, 其名称保证了模块在Maven仓库中的唯一性;另一方面,名称要反映模块在系统中的职责。例如,在COLA架构中,模块代表着架构层次,因此,对任何应该遵循COLA规范的应用都有着xxx-controller、xxx-app、xxx-domain和xxx-Infrastructure这4个标准模块。   
 <br/>
 <img width="278" alt="image" src="https://user-images.githubusercontent.com/5245347/177231695-3483092a-6a7c-42a6-9502-34d6654d261e.png">
-
-
-### 1.5 场景举例说明 
-
-**所有命名严禁使用拼音与英文混合的方式，更不允许直接使用中文拼音的方式。**
-
-正例：`jinan / beijing / rmb 等国际通用的名称，可视同英文。`   
-反例：`DaZhePromotion [打折] / getPingfenByName() [评分] / int 某变量 = 3`.  
-
-**杜绝完全不规范的缩写，避免望文不知义：**
-
-反例：condition"缩写"命名成 condi，此类随意缩写严重降低了代码的可阅读性。    
-
-推荐动词在前，名词在后.  
-
-```java
-void importExcel(Excel excel); 
-```
-
-dao层可以省略名词。   
-
-```java
-public interface StudentMapper {
-    int save(Student student);
-   
-    List<Student> findList();
-   
-    int edit(Student student);
-}
-```
-
-service层要写操作的实体名。   
-
-```java
-public class StudentService{
-    void saveStudent(Student student){}
-    
-    List<Student> findListStudent(){}
-    
-    void editStudent(Student student)(){}
-}
-```
-
-* 属性名称
-
-- boolean类型变量都不要加 `is`.  
-
-* 方法参数
-
-- 无论是 `controller` , `service` , `dao` 还是其他的代码，每个方法最多 `3` 个参数，如果超出 `3` 个参数的话，建议封装成 `javabean` 对象。   
-- 不推荐直接使用 `JSONObject` , `Map<String,Object>` 等直接作为方法参数。  
-
 
 
 ### 2. 分层规范
