@@ -306,7 +306,7 @@ public Response editUser(UserVO userVO) {
 }
 ```
 
-3. 对于试图数据对象VO，在多结构的情况可使用内部类。
+4.对于试图数据对象(VO)，推荐使用内部类。  
 
 ```
 @Setter
@@ -322,14 +322,10 @@ public class UserVO{
    public staic class Role {
       private String id;
       private String name;
-   
    }
-
 }
 
-
 ```
-
 
 #### 2.3. service
 
