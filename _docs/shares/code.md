@@ -146,7 +146,7 @@ public class StudentService{
 - 无论是 `controller` , `service` , `dao` 还是其他的代码，每个方法最多 `3` 个参数，如果超出 `3` 个参数的话，建议封装成 `javabean` 对象。   
 - 不推荐直接使用 `JSONObject` , `Map<String,Object>` 等直接作为方法参数。  
 
-**8.entity层类型定义不要采用基本数据类型**
+**8.DTO、VO、entity等传递对象，数据类型的定义不要采用基本数据类型**
 
 基本数据类型，在对象实例化的时候都会有默认值，这些默认值，容易混乱业务。
 
@@ -157,7 +157,6 @@ public class User{
   private String name;
   private long orderNo;
   private boolean admin;
-
 }
 ```
 
@@ -168,7 +167,6 @@ public class User{
   private String name;
   private Long orderNo;
   private Boolean admin;
-
 }
 ```
 
@@ -348,7 +346,7 @@ public class UserVO{
    @Setter
    @Getter
    public staic class Role {
-      private String id;
+      private Interger id;
       private String name;
    }
 }
@@ -508,8 +506,7 @@ public class StudentEntity{
 
     public boolean isEffective(){
         return status == 1 && deleted = 0;
-    }
-    
+    }    
 }
 ```
 
