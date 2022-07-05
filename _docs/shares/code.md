@@ -230,9 +230,9 @@ public class StudentService{
 @RequestMapping("systemConfig")
 public class SystemConfigController{
     @PostMapping("/save")
-    public Response saveSystemConfig(@RequestBody SystemConfigDTO configDTO) {
+    public Response saveSystemConfig(@RequestBody SystemConfigVO configVO) {
         configDTO.validateXXX(); //请求参数的校验
-        systemConfigService.saveSystemConfig(configDTO);
+        systemConfigService.saveSystemConfig(configVO);
         return Response.ok();
     }
 }
@@ -290,21 +290,46 @@ public void downloadFile(String filePath, HttpServletResponse response) {
 ```java
 @PostMapping("/edit")
 @Transactional
-public Response editUser(UserDTO userDTO) {
+public Response editUser(UserVO userVO) {
 
-    User user = userService.getUser(userDTO.getId());
+    User user = userService.getUser(userVO.getId());
     if (user == null) {
         return Response.buildFailure("xxx","用户不存在");
     }
 
-    List<Role> roleList = userDTO.getRoleList();
+    List<Role> roleList = userVO.getRoleList();
     userRoleService.edit(roleList);
     
-    userService.editUser(userDto);
+    userService.editUser(userVO);
 
     return Response.buildSuccess();
 }
 ```
+
+3. 对于试图数据对象VO，在多结构的情况可使用内部类。
+
+```
+@Setter
+@Getter
+public class UserVO{
+
+   private String name;
+   private String department;
+   private List<Role> roles;
+   
+   @Setter
+   @Getter
+   public staic class Role {
+      private String id;
+      private String name;
+   
+   }
+
+}
+
+
+```
+
 
 #### 2.3. service
 
