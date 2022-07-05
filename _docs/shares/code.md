@@ -247,19 +247,19 @@ public class SystemConfigController{
 *正例：*
 
 ```
-GET  	/department/get?id=		查询某个部门详细信息
-POST 	/department/save		  添加部门
-POST 	/department/edit		  更新部门
-POST 	/department/remove		删除部门
+GET   /department/get?id=1  查询某个部门详细信息
+POST  /department/save      添加部门
+POST  /department/edit      更新部门
+POST  /department/remove    删除部门
 ```
 
 *反例：*
 
 ```
-GET		  /department/{id}		查询某个部门详细信息
-POST	  /department				  添加部门
-PUT		  /department				  更新部门
-DELETE	/department/{id}		删除部门
+GET     /department/{id}    查询某个部门详细信息
+POST    /department         添加部门
+PUT     /department         更新部门
+DELETE  /department/{id}    删除部门
 ```
 
 2.响应数据的类型格式设置等。
