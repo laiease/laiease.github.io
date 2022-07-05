@@ -33,8 +33,56 @@ permalink: /docs/shares-code/
       <td>新增</td>
       <td>create</td>
     </tr>
+     <tr>
+      <td>添加</td>
+      <td>add</td>
+    </tr>
+     <tr>
+      <td>删除</td>
+      <td>remove</td>
+    </tr>
+     <tr>
+      <td>修改</td>
+      <td>update</td>
+    </tr>
+     <tr>
+      <td>查询(单个结果)</td>
+      <td>get</td>
+    </tr>
+     <tr>
+      <td>查询(多个结果)</td>
+      <td>find</td>
+    </tr>
+     <tr>
+      <td>分页查询</td>
+      <td>page</td>
+    </tr>
+     <tr>
+      <td>统计</td>
+      <td>count</td>
+    </tr>
   </tbody>
 </table>
+
+#####  2. 使用对仗词
+   遵守对仗词的命名规则有助于保持一致性,从而提高代码的可读性。像first/last这样的对仗词就很容易理解;而像fileOpen()和fClose()这样的组合则不对称,容易使人迷惑。下面列出一些常见的对仗词组:
+   
+* add/remove 
+* increment/decrement 
+* open/close 
+* begin/end 
+* insert/delete 
+* show/hide 
+* create/destroy 
+* lock/unlock 
+* source/target 
+* first/last 
+* min/max 
+* start/stop 
+* get/set 
+* next/previous 
+* up/down 
+* old/new
 
 **常见方法的前缀**
 
