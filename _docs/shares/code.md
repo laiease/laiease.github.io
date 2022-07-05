@@ -3,8 +3,6 @@ title:  编码规范
 permalink: /docs/shares-code/
 ---
 
-### Java 开发规范
-<br/>
 #### 1. 命名规范
 <br/>
 #### 1.1. 函数命名规范
@@ -247,17 +245,17 @@ public class SystemConfigController{
 
 ```
 GET  	/department/get?id=		查询某个部门详细信息
-POST 	/department/save		添加部门
-POST 	/department/edit		更新部门
+POST 	/department/save		  添加部门
+POST 	/department/edit		  更新部门
 POST 	/department/remove		删除部门
 ```
 
 *反例：*
 
 ```
-GET		/department/{id}		查询某个部门详细信息
-POST	/department				添加部门
-PUT		/department				更新部门
+GET		  /department/{id}		查询某个部门详细信息
+POST	  /department				  添加部门
+PUT		  /department				  更新部门
 DELETE	/department/{id}		删除部门
 ```
 
