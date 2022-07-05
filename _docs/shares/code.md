@@ -148,6 +148,8 @@ public class StudentService{
 
 **8.entity层类型定义不要采用基本数据类型**
 
+基本数据类型，在对象实例化的时候都会有默认值，这些默认值，容易混乱业务。
+
 反例
 ```java
 public class User{
