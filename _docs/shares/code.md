@@ -82,7 +82,7 @@ permalink: /docs/shares-code/
 * old/new
 
 #####  4. 后置限定词
-    很多程序中会有表示计算结果的变量,例如总额、平均值、最大值等。如果你要用类似Total、Sum、Average、Max、Min这样的限定词来修改某个命名,那么记住把限定词加到名字的最后,并在项目中贯彻执行,保持命名风格的一致性。   
+   很多程序中会有表示计算结果的变量,例如总额、平均值、最大值等。如果你要用类似Total、Sum、Average、Max、Min这样的限定词来修改某个命名,那么记住把限定词加到名字的最后,并在项目中贯彻执行,保持命名风格的一致性。   
    这种方法有很多优点。首先,变量名中最重要的部分,即为这一变量赋予主要含义的部分应位于最前面,这样可以突出显示,并会被首先阅读到。其次,可以避免同时在程序中使用totalRevenue和revenueTotal 而产生的歧义。如果贯彻限定词后置的原则,我们就能收获一组非常优雅、具有对称性的变量命名,例如revenueTotal(总收入)、expenseTotal(总支出)、revenueAverage(平均收入)和expenseAverage(平均支出)。   
    需要注意的一点是Num这个限定词,Num放在变量名的结束位置表示一个下标,customerNum表示的是当前客户的序号。为了避免Num带来的麻烦,我建议用Count或者Total来表示总数,用Id表示序号。这样,customerCount表示客户的总数,customerId表示客户的编号。   
 
@@ -119,6 +119,8 @@ permalink: /docs/shares-code/
  <img width="278" alt="image" src="https://user-images.githubusercontent.com/5245347/177231695-3483092a-6a7c-42a6-9502-34d6654d261e.png">
 
 
+#### 场景举例说明 
+
 **所有命名严禁使用拼音与英文混合的方式，更不允许直接使用中文拼音的方式。**
 
 正例：`jinan / beijing / rmb 等国际通用的名称，可视同英文。`
@@ -128,21 +130,6 @@ permalink: /docs/shares-code/
 **杜绝完全不规范的缩写，避免望文不知义：**
 
 反例：condition"缩写"命名成 condi，此类随意缩写严重降低了代码的可阅读性。
-
-#####  1. 方法命名
-
-
-**常见方法的前缀**
-
-- 导入 `import` 
-- 导出 `export` 
-- 添加 `save`
-- 修改 `edit` 
-- 删除 `remove` 
-- 查询列表 `findList` 
-- 分页查询 `findPage` 
-- 查询单个 `get`
-- 统计值  `count`
 
 推荐动词在前，名词在后
 
@@ -174,14 +161,16 @@ public class StudentService{
 }
 ```
 
-##### 2. 属性名称
+* 属性名称
 
 - boolean类型变量都不要加 `is`
 
-##### 3. 方法参数
+* 方法参数
 
 - 无论是 `controller` , `service` , `dao` 还是其他的代码，每个方法最多 `3` 个参数，如果超出 `3` 个参数的话，建议封装成 `javabean` 对象。
 - 不推荐直接使用 `JSONObject` , `Map<String,Object>` 等直接作为方法参数。
+
+
 
 #### 分层规范
 
