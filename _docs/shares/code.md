@@ -15,9 +15,26 @@ permalink: /docs/shares-code/
 
 **杜绝完全不规范的缩写，避免望文不知义：**
 
-反例：AbstractClass"缩写"命名成 AbsClass；condition"缩写"命名成 condi，此类随意缩写严重降低了代码的可阅读性。
+反例：condition"缩写"命名成 condi，此类随意缩写严重降低了代码的可阅读性。
 
 #####  1. 方法名称
+
+  个概念对应一个词,并且一以贯之。例如,fetch、retrieve、get、find和query都可以表示查询的意思,如果不加约定地给多个类中的同种查询方法命名,你怎么记得是哪个类中的哪个方法呢?同样,在一段代码中,同时存在manager、controller和handler,会令人感到困惑。因此在项目中,通常按照表1-1所示的约定,保持命名的一致性。
+  
+<table>
+  <thead>
+    <tr>
+      <td>操作</td>
+      <td>函数名约定</td>
+    </tr>          
+  </thead>
+  <tbody>
+    <tr>
+      <td>新增</td>
+      <td>create</td>
+    </tr>
+  </tbody>
+</table>
 
 **常见方法的前缀**
 
